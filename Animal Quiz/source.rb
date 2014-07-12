@@ -1,8 +1,10 @@
-require 'redis'
+require 'mongo'
 
 class AnimalQuiz
+  include Mongo
+
   def initialize
-    @DB = Redis.new(:hostname => "localhost", :port => 6379)
+    @DB = Connection.new.db('animal_quiz')
     new_game
   end
 
@@ -11,9 +13,14 @@ class AnimalQuiz
     @answer = gets.chomp
   end
 
-  def continue? question, &block
+  def ask? question
     ask question
-    return block.call if @answer == "y"
+    @yes = @answer.eql? "y"
+  end
+
+  def continue? question, &block
+    ask? question
+    return block.call if @yes
     exit
   end
 
@@ -23,9 +30,17 @@ class AnimalQuiz
     end
   end
 
-  def new_game
-    ask "Think of an animal:"
+  def success
+    puts "Yahoo! I am pretty smart, how do you think?"
+    start_new_game?
+  end
 
+  def new_game
+    @conditions = {}
+    puts "Think of an animal."
+      # sleep 1.5
+
+    return success if @yes
   end
 end
 
