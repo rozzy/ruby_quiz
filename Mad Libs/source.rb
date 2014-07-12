@@ -43,12 +43,17 @@ class Madlibs
     puts "Nice! So there are the requested words:\n\n"
     get_answers
     compile_story
+    puts @story
+    start_a_new_game?
   end
 
   def compile_story
     @orig_story = @story
     found = @story.scan(/\({2}(.[^(]+)\){2}/i).flatten
-    puts "story: #{found} = #{@answers}, original story: #{@orig_story}, keywords: #{@keywords}"
+    # puts "story: #{found} = #{@answers}, original story: #{@orig_story}, keywords: #{@keywords}"
+    found.each do |placeholder|
+      @story.gsub! /\(\(#{placeholder}\)\)/, @answers[placeholder.split(':').first]
+    end
   end
 
   def get_answers
@@ -70,16 +75,20 @@ class Madlibs
 
   def rules
     puts  "Hey!\n"+
-          "Mad Libs is a phrasal template word game invented in the United States where one player prompts another for a list of words to substitute for blanks in a story, before reading the –often comical or nonsensical – story aloud. The game is frequently played as a party game or as a pastime.\n\n"+
-          "Start a new game? (y/n)"
+          "Mad Libs is a phrasal template word game invented in the United States where one player prompts another for a list of words to substitute for blanks in a story, before reading the –often comical or nonsensical – story aloud. The game is frequently played as a party game or as a pastime.\n\n"
   end
 
-  def initialize
-    rules
+  def start_a_new_game?
+    puts "Start a new game? (y/n)"
     answer = gets.strip
     return new_story if answer == "y"
     puts "Ok"
     exit
+  end
+
+  def initialize
+    rules
+    start_a_new_game?
   end
 end
 
