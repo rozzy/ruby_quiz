@@ -21,9 +21,9 @@ class Madlibs
   end
 
   def get_story name = false
-    @dir = Dir.glob("*.mdlib")
+    @dir = Dir.glob("*.madlib")
     return add_one? if @dir.empty?
-    @story = name ? File.read(name.concat ".mdlib") : random_story
+    @story = name ? File.read(name.concat ".madlib") : random_story
     parse_story
   end
 
